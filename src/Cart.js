@@ -48,24 +48,24 @@ class Input extends Component {
 // 		// 		</li>
 // 		// 	)
 //     // })
-    
+
 //     console.log(this.props.list);
 // 		const list = [...this.props.list]
-	
+
 // 	}
 // }
-function CartList ({list,remove,add}) {
+function CartList({ list, remove, add }) {
 	return (
 		<ul>
-			{list.map((item,index) => 
-			(	<li key={index}>
-				<span>名称:{item.name} </span>
-				 <span>价格:{item.price} </span>
-				<span>
-					 <button onClick={() =>remove(item)}>-</button> {item.count} <button onClick={() =>add(item)}>+</button></span>
-			</li>)	
+			{list.map((item, index) =>
+				(<li key={index}>
+					<span>名称:{item.name} </span>
+					<span>价格:{item.price * item.count} </span>
+					<span>
+						<button onClick={() => remove(item)}>-</button> {item.count} <button onClick={() => add(item)}>+</button></span>
+				</li>)
 			)}
-			
+
 		</ul>
 	)
 }
@@ -78,53 +78,53 @@ export default class Cart extends Component {
 			price: '',
 			list: []
 		}
-  }
+	}
 	change = (e, stateName) => {
 		this.setState({
 			[stateName]: e.target.value
 		})
 	}
 	addCart = () => {
-    const newList = [...this.state.list]
-    newList.push({
-      name: this.state.name,
-			price:this.state.price,
+		const newList = [...this.state.list]
+		newList.push({
+			name: this.state.name,
+			price: this.state.price,
 			count: 1
-    })
+		})
 		this.setState({
-      list: newList,
-      name: '',
-      price: ''
-    })
+			list: newList,
+			name: '',
+			price: ''
+		})
 	}
 	add = (item) => {
 		const newItem = [...this.state.list]
-		const index =	newItem.findIndex(x => x.name === item.name)
-	
+		const index = newItem.findIndex(x => x.name === item.name)
+
 		const itm = newItem[index]
-		if(itm) {
-			newItem.splice(index, 1, {...newItem[index], count: newItem[index].count + 1})	
-		}else {
-			newItem.push({...item,count: 1})
+		if (itm) {
+			newItem.splice(index, 1, { ...newItem[index], count: newItem[index].count + 1 })
+		} else {
+			newItem.push({ ...item, count: 1 })
 		}
-		
-		this.setState( {
+
+		this.setState({
 			list: newItem
 		})
 	}
 	remove = (item) => {
 		const newItem = [...this.state.list]
-		const index =	newItem.findIndex(x => x.name === item.name)
-		newItem.splice(index, 1, {...newItem[index], count: newItem[index].count - 1})
-		this.setState( {
+		const index = newItem.findIndex(x => x.name === item.name)
+		newItem.splice(index, 1, { ...newItem[index], count: newItem[index].count - 1 })
+		this.setState({
 			list: newItem
 		})
 	}
 	render() {
 		return (
 			<div>
-        <Input name={this.state.name} price={this.state.price} onClick={this.change} addCart={this.addCart} />
-				<CartList list={this.state.list} remove={this.remove} add={this.add}/>
+				<Input name={this.state.name} price={this.state.price} onClick={this.change} addCart={this.addCart} />
+				<CartList list={this.state.list} remove={this.remove} add={this.add} />
 			</div>
 		)
 	}
