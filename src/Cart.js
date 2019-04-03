@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { isBoolean } from 'util'
 
 class Input extends Component {
 	constructor(props) {
@@ -32,40 +33,30 @@ class Input extends Component {
 		)
 	}
 }
+function Payment({ totalPrice }) {
+	return (
+		<div>
+			<span>代付款:{totalPrice}</span>
+			<button onClick={() => alert('票子拿来!!!')}>付款</button>
+		</div>
+	)
+}
 
-// class CartList extends Component {
-// 	constructor(props) {
-// 		super(props)
-// 	}
-// 	render() {
-// 		// let list = this.props.list.map((item, index) => {
-// 		// 	return (
-// 		// 		<li key={index}>
-// 		// 		<span>名称:{item.name} </span>
-// 		// 		<span>价格:{item.price} </span>
-// 		// 		<span>
-// 		// 			<button onClick={() =>this.props.remove(item)}>-</button> {item.count} <button onClick={() =>this.props.add(item)}>+</button></span>
-// 		// 		</li>
-// 		// 	)
-//     // })
-
-//     console.log(this.props.list);
-// 		const list = [...this.props.list]
-
-// 	}
-// }
-function CartList({ list, remove, add }) {
+function CartList({ list, remove, add, onChecked }) {
 	return (
 		<ul>
-			{list.map((item, index) =>
-				(<li key={index}>
+			{list.map((item, index) => (
+				<li key={index}>
+					<input type="checkbox" checked={item.ischecked && 'checked'} onChange={() => onChecked(item)} />
 					<span>名称:{item.name} </span>
-					<span>价格:{item.price * item.count} </span>
+					<span>单价:{item.price} </span>
 					<span>
-						<button onClick={() => remove(item)}>-</button> {item.count} <button onClick={() => add(item)}>+</button></span>
-				</li>)
-			)}
-
+						<button onClick={() => remove(item)}>-</button> {item.count}{' '}
+						<button onClick={() => add(item)}>+</button>
+					</span>
+					<span>总价:{item.price * item.count} </span>
+				</li>
+			))}
 		</ul>
 	)
 }
@@ -76,8 +67,29 @@ export default class Cart extends Component {
 		this.state = {
 			name: '',
 			price: '',
-			list: []
+			list: [],
+			totalPrice: 0
 		}
+	}
+	total = (newItem) => {
+		let allPrice = 0
+		newItem.filter((x) => {
+			if (x.ischecked) {
+				allPrice += x.price * x.count
+			}
+		})
+		this.setState({
+			totalPrice: allPrice
+		})
+	}
+	onChecked = (item) => {
+		const newItem = [ ...this.state.list ]
+		const index = newItem.findIndex((x) => x.name === item.name)
+		newItem.splice(index, 1, { ...newItem[index], ischecked: !newItem[index].ischecked })
+		this.setState({
+			list: newItem
+		})
+		this.total(newItem)
 	}
 	change = (e, stateName) => {
 		this.setState({
@@ -85,21 +97,32 @@ export default class Cart extends Component {
 		})
 	}
 	addCart = () => {
-		const newList = [...this.state.list]
-		newList.push({
-			name: this.state.name,
-			price: this.state.price,
-			count: 1
-		})
-		this.setState({
-			list: newList,
-			name: '',
-			price: ''
-		})
+		const newList = [ ...this.state.list ]
+		const index = newList.findIndex((item) => item.name === this.state.name)
+		if (newList[index]) {
+			newList[index].count++
+		} else {
+			newList.push({
+				name: this.state.name,
+				price: this.state.price,
+				count: 1,
+				ischecked: false
+			})
+		}
+		if (this.state.name && this.state.price) {
+			this.setState({
+				list: newList,
+				name: '',
+				price: ''
+			})
+		} else {
+			console.log('暂无商品')
+		}
+		this.total(newList)
 	}
 	add = (item) => {
-		const newItem = [...this.state.list]
-		const index = newItem.findIndex(x => x.name === item.name)
+		const newItem = [ ...this.state.list ]
+		const index = newItem.findIndex((x) => x.name === item.name)
 
 		const itm = newItem[index]
 		if (itm) {
@@ -111,20 +134,30 @@ export default class Cart extends Component {
 		this.setState({
 			list: newItem
 		})
+		this.total(newItem)
 	}
 	remove = (item) => {
-		const newItem = [...this.state.list]
-		const index = newItem.findIndex(x => x.name === item.name)
-		newItem.splice(index, 1, { ...newItem[index], count: newItem[index].count - 1 })
+		let newItem = [ ...this.state.list ]
+		const index = newItem.findIndex((x) => x.name === item.name)
+		if (newItem[index].count > 1) {
+			newItem.splice(index, 1, { ...newItem[index], count: newItem[index].count - 1 })
+		} else {
+			if (window.confirm('确定要出删除吗')) {
+				newItem.splice(index, 1)
+			}
+		}
+
 		this.setState({
 			list: newItem
 		})
+		this.total(newItem)
 	}
 	render() {
 		return (
 			<div>
 				<Input name={this.state.name} price={this.state.price} onClick={this.change} addCart={this.addCart} />
-				<CartList list={this.state.list} remove={this.remove} add={this.add} />
+				<CartList list={this.state.list} remove={this.remove} add={this.add} onChecked={this.onChecked} />
+				<Payment totalPrice={this.state.totalPrice} />
 			</div>
 		)
 	}
