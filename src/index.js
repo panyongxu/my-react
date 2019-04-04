@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Button from './button'
+import Cat from './Cat'
 import Cart from './Cart'
 
 import './index.css'
@@ -128,6 +128,7 @@ class Game extends React.Component {
 				</div>
 				<Button /> */}
 				<Cart></Cart>
+				{/* <Cat></Cat> */}
 			</div>
 		)
 	}

@@ -35,10 +35,12 @@ class Input extends Component {
 }
 function Payment({ totalPrice }) {
 	return (
-		<div>
-			<span>代付款:{totalPrice}</span>
-			<button onClick={() => alert('票子拿来!!!')}>付款</button>
-		</div>
+		totalPrice > 0 && (
+			<div>
+				<span>代付款:{totalPrice}</span>
+				<button onClick={() => alert('票子拿来!!!')}>付款</button>
+			</div>
+		)
 	)
 }
 
@@ -47,7 +49,7 @@ function CartList({ list, remove, add, onChecked }) {
 		<ul>
 			{list.map((item, index) => (
 				<li key={index}>
-					<input type="checkbox" checked={item.ischecked && 'checked'} onChange={() => onChecked(item)} />
+					<input type="checkbox" checked={item.ischecked} onChange={() => onChecked(item)} />
 					<span>名称:{item.name} </span>
 					<span>单价:{item.price} </span>
 					<span>
