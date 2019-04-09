@@ -29,6 +29,16 @@ function CreateFrom(Comp) {
 			}
 			return status
 		}
+		// 筛选对象
+		filter = (obj) => {
+			let data = {}
+			Object.keys(obj).map(key => {
+				if (key.indexOf('message') === -1) {
+					data[key] = obj[key]
+				}
+			})
+			return data
+		}
 		// 验证所有
 		validate = (cb) => {
 			// 所有验证数据
@@ -37,7 +47,8 @@ function CreateFrom(Comp) {
 				return this.validateField(ruleName)
 			})
 			const ret = rets.every(x => x == true)
-			cb(ret, this.state)
+
+			cb(ret, this.filter(this.state))
 		}
 		// 点击事件提升
 		handleChange = (e) => {
