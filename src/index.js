@@ -2,11 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Cat from './Cat'
 import Cart from './Cart'
-
-
-
+import RadioGroup from './component/RadioGroup/RadioGroup'
+import Radio from './component/RadioGroup/Radio'
+import Filter from './component/Filter/Filter'
+import From from './component/Form/From'
+import Input from './component/Form/Input'
+import InputItem from './component/Form/InputItem'
 import './index.css'
-
 
 function calculateWinner(squares) {
 	const lines = [
@@ -113,9 +115,7 @@ class Game extends React.Component {
 			const desc = move ? 'Move #' + move : 'Game start'
 			return (
 				<li key={move}>
-					<span  onClick={() => this.jumpTo(move)}>
-						{desc}
-					</span>
+					<span onClick={() => this.jumpTo(move)}>{desc}</span>
 				</li>
 			)
 		})
@@ -130,13 +130,31 @@ class Game extends React.Component {
 					<ol>{moves}</ol>
 				</div>
 				<Button /> */}
-				<Cart></Cart>
+				{/* 购物车 */}
+				<Cart />
 				{/* <Cat></Cat> */}
+				{/* 单选组件 */}
+				<RadioGroup name="mvvm">
+					<Radio value="Vue">Vue</Radio>
+					<Radio value="React">React</Radio>
+					<Radio value="Ang">Ang</Radio>
+				</RadioGroup>
+				{/* 过滤器组件 */}
+				<Filter type="p">
+					<p>我是P1</p>
+					<span>我是span1</span>
+					<p>我是P2</p>
+					<span>我是span2</span>
+				</Filter>
+				{/* 表单 */}
+				<From>
+						<Input />
+						<Input />
+				</From>
 			</div>
 		)
 	}
 }
-
 
 // ========================================
 

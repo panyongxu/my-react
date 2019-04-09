@@ -51,7 +51,7 @@ function CartList({ list, remove, add, onChecked }) {
 		<ul>
 			{list.map((item, index) => (
 				<li key={index}>
-					<input type="checkbox" checked={item.ischecked !== 'false' } onChange={() => onChecked(item)} />
+					<input type="checkbox" checked={item.ischecked !== 'false'} onChange={() => onChecked(item)} />
 					<span>名称:{item.name} </span>
 					<span>单价:{item.price} </span>
 					<span>
@@ -76,7 +76,7 @@ export default class Cart extends Component {
 		}
 	}
 	componentDidMount() {
-		axios.get('/cartList').then(({data}) => {
+		axios.get('/cartList').then(({ data }) => {
 			this.setState({
 				list: data
 			})
