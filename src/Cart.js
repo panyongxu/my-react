@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import { isBoolean } from 'util'
+axios.defaults.baseURL = 'http://localhost:8080/'
 
 class Input extends Component {
 	constructor(props) {
@@ -49,7 +51,7 @@ function CartList({ list, remove, add, onChecked }) {
 		<ul>
 			{list.map((item, index) => (
 				<li key={index}>
-					<input type="checkbox" checked={item.ischecked} onChange={() => onChecked(item)} />
+					<input type="checkbox" checked={item.ischecked !== 'false' } onChange={() => onChecked(item)} />
 					<span>名称:{item.name} </span>
 					<span>单价:{item.price} </span>
 					<span>
@@ -72,6 +74,13 @@ export default class Cart extends Component {
 			list: [],
 			totalPrice: 0
 		}
+	}
+	componentDidMount() {
+		axios.get('/cartList').then(({data}) => {
+			this.setState({
+				list: data
+			})
+		})
 	}
 	total = (newItem) => {
 		let allPrice = 0
@@ -110,6 +119,14 @@ export default class Cart extends Component {
 				count: 1,
 				ischecked: false
 			})
+			axios.get('/addCarts', {
+				params: {
+					name: this.state.name,
+					price: this.state.price,
+					count: 1,
+					ischecked: false
+				}
+			})
 		}
 		if (this.state.name && this.state.price) {
 			this.setState({
@@ -128,7 +145,7 @@ export default class Cart extends Component {
 
 		const itm = newItem[index]
 		if (itm) {
-			newItem.splice(index, 1, { ...newItem[index], count: newItem[index].count + 1 })
+			newItem.splice(index, 1, { ...newItem[index], count: Number(newItem[index].count) + 1 })
 		} else {
 			newItem.push({ ...item, count: 1 })
 		}
@@ -142,7 +159,7 @@ export default class Cart extends Component {
 		let newItem = [ ...this.state.list ]
 		const index = newItem.findIndex((x) => x.name === item.name)
 		if (newItem[index].count > 1) {
-			newItem.splice(index, 1, { ...newItem[index], count: newItem[index].count - 1 })
+			newItem.splice(index, 1, { ...newItem[index], count: Number(newItem[index].count) - 1 })
 		} else {
 			if (window.confirm('确定要出删除吗')) {
 				newItem.splice(index, 1)

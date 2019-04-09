@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom'
 import Cat from './Cat'
 import Cart from './Cart'
 
+
+
 import './index.css'
+
 
 function calculateWinner(squares) {
 	const lines = [
