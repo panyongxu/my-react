@@ -11,22 +11,38 @@ function CreateFrom(Comp) {
 		// 单次验证
 		validateField = (name) => {
 			const rules = this.options[name].rules
-			console.log(name,rules);
-			rules.some(rule => {
-				if(rule.required){
-					if(this.state[name] != '') {
-						
+			const status = rules && !(rules.some(rule => {
+				if (rule.required) {
+					if (!this.state[name]) {
+						this.setState({
+							[name + 'message']: rule.message
+						})
 						return true
 					}
-					
+
 				}
+			}))
+			if (status) {
+				this.setState({
+					[name + 'message']: ''
+				})
+			}
+			return status
+		}
+		// 验证所有
+		validate = (cb) => {
+			// 所有验证数据
+			const rules = this.options
+			const rets = Object.keys(rules).map(ruleName => {
+				return this.validateField(ruleName)
 			})
+			const ret = rets.every(x => x == true)
+			cb(ret, this.state)
 		}
 		// 点击事件提升
 		handleChange = (e) => {
 			const { name, value } = e.target
-			console.log(this.options)
-			this.setState({[name]: value},() => {
+			this.setState({ [name]: value }, () => {
 				this.validateField(name)
 			})
 		}
@@ -45,7 +61,7 @@ function CreateFrom(Comp) {
 			)
 		}
 		render() {
-			return <Comp {...this.props} getFieldDec={this.getFieldDec} />
+			return <Comp {...this.props} getFieldDec={this.getFieldDec} validate={this.validate} />
 		}
 	}
 }
@@ -54,14 +70,28 @@ class From extends Component {
 	constructor(props) {
 		super(props)
 	}
+	// 提交按钮
+	onSubmit = () => {
+		const { validate } = this.props
+		validate((vali, data) => {
+			if (vali) {
+				console.log('验证成功', data)
+			} else {
+				alert('提交失败', data)
+			}
+		})
+	}
 	render() {
 		const { getFieldDec } = this.props
 		return (
 			<div>
 				{getFieldDec('uname', {
-					rules: [ { required: true, message: '用户名必填' } ]
+					rules: [{ required: true, message: '用户名必填' }]
 				})(<Input />)}
-				{getFieldDec('pwd', {})(<Input />)}
+				{getFieldDec('pwd', {
+					rules: [{ required: true, message: '密码必填' }]
+				})(<Input />)}
+				<button onClick={this.onSubmit}>提交</button>
 			</div>
 		)
 	}
