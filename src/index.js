@@ -147,10 +147,7 @@ class Game extends React.Component {
 					<span>我是span2</span>
 				</Filter>
 				{/* 表单 */}
-				<From>
-						<Input />
-						<Input />
-				</From>
+				<From></From>
 			</div>
 		)
 	}
