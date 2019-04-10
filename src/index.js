@@ -1,5 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import store from './store/store'
+import { Provider } from 'react-redux'
+
 import Cat from './Cat'
 import Cart from './Cart'
 import RadioGroup from './component/RadioGroup/RadioGroup'
@@ -10,6 +13,7 @@ import Input from './component/Form/Input'
 import InputItem from './component/Form/InputItem'
 import './index.css'
 import FormItem from 'antd/lib/form/FormItem'
+import Redux from './view/Redux'
 
 function calculateWinner(squares) {
 	const lines = [
@@ -152,22 +156,23 @@ class Game extends React.Component {
 					<span>我是span2</span>
 				</Filter>
 				{/* 表单 */}
-				<From rules={this.state.rules} onSubmit={(data) => {
-							console.log(data)
-						}}>
+				<From
+					rules={this.state.rules}
+					onSubmit={(data) => {
+						console.log(data)
+					}}
+				>
 					<FormItem name="账号" prop="uname">
 						<Input />
 					</FormItem>
 					<FormItem name="密码" prop="pwd">
 						<Input />
 					</FormItem>
-					<FormItem
-						name="提交"
-						htmlType="submit"
-					>
+					<FormItem name="提交" htmlType="submit">
 						<button />
 					</FormItem>
 				</From>
+				<Redux />
 			</div>
 		)
 	}
@@ -175,4 +180,9 @@ class Game extends React.Component {
 
 // ========================================
 
-ReactDOM.render(<Game />, document.getElementById('root'))
+ReactDOM.render(
+	<Provider store={store}>
+		<Game />
+	</Provider>,
+	document.getElementById('root')
+)
