@@ -9,6 +9,7 @@ import From from './component/Form/From'
 import Input from './component/Form/Input'
 import InputItem from './component/Form/InputItem'
 import './index.css'
+import FormItem from 'antd/lib/form/FormItem'
 
 function calculateWinner(squares) {
 	const lines = [
@@ -74,7 +75,11 @@ class Game extends React.Component {
 		this.state = {
 			history: [ { squares: Array(9).fill(null) } ],
 			xIsNext: true,
-			stepNumber: 0
+			stepNumber: 0,
+			rules: {
+				uname: [ { required: true, message: '用户名必填' } ],
+				pwd: [ { required: true, message: '密码必填' } ]
+			}
 		}
 	}
 	handleClick = (i) => {
@@ -147,7 +152,22 @@ class Game extends React.Component {
 					<span>我是span2</span>
 				</Filter>
 				{/* 表单 */}
-				<From></From>
+				<From rules={this.state.rules} onSubmit={(data) => {
+							console.log(data)
+						}}>
+					<FormItem name="账号" prop="uname">
+						<Input />
+					</FormItem>
+					<FormItem name="密码" prop="pwd">
+						<Input />
+					</FormItem>
+					<FormItem
+						name="提交"
+						htmlType="submit"
+					>
+						<button />
+					</FormItem>
+				</From>
 			</div>
 		)
 	}
