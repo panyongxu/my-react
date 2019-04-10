@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Input from './Input'
+import FormItem from 'antd/lib/form/FormItem';
 
 function CreateFrom(Comp) {
 	return class extends Component {
@@ -69,23 +70,34 @@ function CreateFrom(Comp) {
 				}
 			})
 		}
-		// 创建input包装器
-		getFieldDec = (name, field, option) => {
+		// 创建FromItem包装器
+		getFromItem = (name,field,option) => {
 			this.options[field] = option
+			return (FromItem) => (
+			<div>
+				<label>{name}</label>
+				{React.cloneElement(FromItem,{
+					name: name,
+					// 传递Input
+					children: this.getFieldDec(field)(FromItem.props.children)
+				})}
+				{this.state[field + 'message'] && <p className="error">{this.state[field + 'message']}</p>}
+			</div>)
+		}
+		// 创建Input包装器
+		getFieldDec = (field) => {
 			return (Input) => (
 				<div>
-					<label>{name}</label>
 					{React.cloneElement(Input, {
 						name: field,
 						value: this.state[field] || '',
 						onChange: this.handleChange
-					})}
-					{this.state[field + 'message'] && <p className="error">{this.state[field + 'message']}</p>}
+					})}				
 				</div>
 			)
 		}
 		// 创建提交按钮包装器
-		getSubmit = (name, cb) => {
+		getSubmit = (name, cb) => {			
 			return (Submit) => (
 				<div>
 					{React.cloneElement(Submit, {
@@ -99,6 +111,7 @@ function CreateFrom(Comp) {
 			return (
 				<Comp
 					{...this.props}
+					getFromItem={this.getFromItem}
 					getSubmit={this.getSubmit}
 					getFieldDec={this.getFieldDec}
 					validate={this.validate}
@@ -115,14 +128,14 @@ class From extends Component {
 	}
 
 	render() {
-		const { getFieldDec, getSubmit, onSubmit, children, rules } = this.props
+		const { getFromItem, getSubmit, onSubmit, children, rules } = this.props
 		return (
 			<div>
 				{React.Children.map(children, (child) => {
-					if (child.props.htmlType !== 'submit') {
-						return getFieldDec(child.props.name, child.props.prop, {
+					if (child.props.htmlType !== 'submit') {						
+						return getFromItem(child.props.name, child.props.prop, {
 							rules: rules[child.props.prop]
-						})(child.props.children)
+						})(child)
 					} else {
 						const { name, children } = child.props
 						return getSubmit(name, onSubmit)(children)
@@ -133,6 +146,6 @@ class From extends Component {
 	}
 }
 
-// const newFrom = CreateFrom(From)
+
 
 export default From

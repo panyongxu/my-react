@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import store from './store/store'
 import { Provider } from 'react-redux'
+import { BrowserRouter, Route, Link } from 'react-router-dom'
 
 import Cat from './Cat'
 import Cart from './Cart'
@@ -140,7 +141,7 @@ class Game extends React.Component {
 				</div>
 				<Button /> */}
 				{/* 购物车 */}
-				<Cart />
+				<Route path="/form" component={Cart} />
 				{/* <Cat></Cat> */}
 				{/* 单选组件 */}
 				<RadioGroup name="mvvm">
@@ -166,13 +167,16 @@ class Game extends React.Component {
 						<Input />
 					</FormItem>
 					<FormItem name="密码" prop="pwd">
-						<Input />
+						<Input type='password'/>
 					</FormItem>
 					<FormItem name="提交" htmlType="submit">
 						<button />
 					</FormItem>
 				</From>
 				<Redux />
+				<ul>
+					<Link to="/form">Link a</Link>
+				</ul>
 			</div>
 		)
 	}
@@ -181,8 +185,10 @@ class Game extends React.Component {
 // ========================================
 
 ReactDOM.render(
-	<Provider store={store}>
-		<Game />
-	</Provider>,
+	<BrowserRouter>
+		<Provider store={store}>
+			<Game />
+		</Provider>
+	</BrowserRouter>,
 	document.getElementById('root')
 )

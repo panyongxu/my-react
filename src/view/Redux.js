@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-const mapStateToProps = (state) => {
-	return { num: state }
-}
-const mapDispatchToProps = (dispatch) => {
-	return {
+
+
+@connect(
+	(state) => ({ num: state }),
+	(dispatch) => ({
 		add: () => dispatch({ type: 'add' }),
 		minus: () => dispatch({ type: 'minus' })
-	}
-}
-
+	})
+)
 class Redux extends Component {
 	render() {
 		return (
@@ -24,4 +23,4 @@ class Redux extends Component {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Redux)
+export default Redux
