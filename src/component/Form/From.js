@@ -108,6 +108,7 @@ function CreateFrom(Comp) {
 	}
 }
 
+@CreateFrom
 class From extends Component {
 	constructor(props) {
 		super(props)
@@ -132,6 +133,6 @@ class From extends Component {
 	}
 }
 
-const newFrom = CreateFrom(From)
+// const newFrom = CreateFrom(From)
 
-export default newFrom
+export default From
