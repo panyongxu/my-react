@@ -3,15 +3,15 @@ import { connect } from 'react-redux'
 
 @connect(
 	(state) => ({ num: state }),
-	(dispatch) => ({
-		add: () => dispatch({ type: 'add' }),
-		minus: () => dispatch({ type: 'minus' }),
+	{
+		add: () => ({ type: 'add' }),
+		minus: () => ({ type: 'minus' }),
 		asyncAdd: () => (dispatch) => {
 			setTimeout(() => {
 				dispatch({ type: 'add' })
 			}, 1000)
 		}
-	})
+	}
 )
 class Redux extends Component {
 	render() {

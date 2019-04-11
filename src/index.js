@@ -15,6 +15,7 @@ import InputItem from './component/Form/InputItem'
 import './index.css'
 import FormItem from 'antd/lib/form/FormItem'
 import Redux from './view/Redux'
+import Router from './view/Router';
 
 function calculateWinner(squares) {
 	const lines = [
@@ -141,23 +142,23 @@ class Game extends React.Component {
 				</div>
 				<Button /> */}
 				{/* 购物车 */}
-				<Route path="/form" component={Cart} />
+				{/* <Route path="/form" component={Cart} /> */}
 				{/* <Cat></Cat> */}
 				{/* 单选组件 */}
-				<RadioGroup name="mvvm">
+				{/* <RadioGroup name="mvvm">
 					<Radio value="Vue">Vue</Radio>
 					<Radio value="React">React</Radio>
 					<Radio value="Ang">Ang</Radio>
-				</RadioGroup>
+				</RadioGroup> */}
 				{/* 过滤器组件 */}
-				<Filter type="p">
+				{/* <Filter type="p">
 					<p>我是P1</p>
 					<span>我是span1</span>
 					<p>我是P2</p>
 					<span>我是span2</span>
-				</Filter>
+				</Filter> */}
 				{/* 表单 */}
-				<From
+				{/* <From
 					rules={this.state.rules}
 					onSubmit={(data) => {
 						console.log(data)
@@ -172,11 +173,9 @@ class Game extends React.Component {
 					<FormItem name="提交" htmlType="submit">
 						<button />
 					</FormItem>
-				</From>
-				<Redux />
-				<ul>
-					<Link to="/form">Link 购物车</Link>
-				</ul>
+				</From> */}
+				{/* <Redux /> */}
+				<Router></Router>
 			</div>
 		)
 	}
