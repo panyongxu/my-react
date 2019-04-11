@@ -1,6 +1,7 @@
 import { createStore,applyMiddleware,combineReducers } from 'redux'
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
+import user from './user'
 
 const counterReducer = (state = 0, action) => {
 	switch (action.type) {
@@ -14,7 +15,7 @@ const counterReducer = (state = 0, action) => {
 }
 
 const store = createStore(
-	counterReducer,
+	combineReducers({counterReducer,user}),
 	applyMiddleware(logger,thunk)
 	)
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 function About(params) {
 	return (
@@ -50,9 +51,72 @@ const NoMatch = (params) => {
 	return <div>404 .{location.pathname} 不存在</div>
 }
 const Index = (params) => {
-	let { location } = params
 	return <div>Index</div>
 }
+
+
+
+@connect(
+	(state) => ({ isLogin: state.user.isLogin })
+)
+class PrivateRoute extends React.Component {
+	constructor(props) {
+		super(props)
+	}
+	render() {
+		let { isLogin, component: Comp, ...rest } = this.props
+		console.log(this.props);
+
+		return (
+			<Route {...rest}
+				render={(props, state) =>
+					isLogin ?
+						(<Comp />)
+						:
+						(<Redirect to={{
+							pathname: "/login",
+							state: { redirect: props.location.pathname }
+						}
+						} />)
+				}
+			/>)
+	}
+}
+
+
+
+@connect(
+	(state) => ({
+		isLogin: state.user.isLogin,
+		isLoading: state.user.isLoading
+	}),
+	{
+		ansycLogin: () => (dispatch) => {
+			dispatch({ type: 'loading' })
+			setTimeout(() => {
+				dispatch({ type: 'login' })
+			}, 1000)
+		}
+	}
+)
+class Login extends React.Component {
+	constructor(props) {
+		super(props)
+	}
+	render() {
+		let { isLoading, isLogin, ansycLogin, location } = this.props
+		const redirect = (location.state && location.state.redirect) || '/'
+		if (isLogin) {
+			return <Redirect to={redirect} />;
+		}
+		return <div>
+			<button onClick={ansycLogin} disabled={isLogin}>{
+				!isLoading ? '登录' : '登录中'
+			}</button>
+		</div>
+	}
+}
+
 export default class Router extends Component {
 	render() {
 		return (
@@ -64,9 +128,11 @@ export default class Router extends Component {
 					</header>
 
 					<Switch>
+						<Route exact path="/" component={Index} />
 						<Route path="/home" component={Home} />
-						<Route path="/about" component={About} />
-            <Route exact path="/" component={Index} />
+						{/* <Route path="/about" component={About} /> */}
+						<Route path="/login" component={Login} />
+						<PrivateRoute path="/about" component={About} />
 						<Route path="/detail/:name" component={Detail} />
 						<Route component={NoMatch} />
 					</Switch>
