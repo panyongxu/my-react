@@ -175,7 +175,7 @@ class Game extends React.Component {
 				</From>
 				<Redux />
 				<ul>
-					<Link to="/form">Link a</Link>
+					<Link to="/form">Link 购物车</Link>
 				</ul>
 			</div>
 		)
