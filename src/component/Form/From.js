@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Input from './Input'
-import FormItem from 'antd/lib/form/FormItem';
+import Schema from 'async-validator'
+import { spawn } from 'child_process';
 
 function CreateFrom(Comp) {
 	return class extends Component {
@@ -11,25 +11,28 @@ function CreateFrom(Comp) {
 		}
 		// 单次验证
 		validateField = (name) => {
-			const rules = this.options[name].rules
-			const status =
-				rules &&
-				!rules.some((rule) => {
-					if (rule.required) {
-						if (!this.state[name]) {
+			const rules = this.options[name].rules // 验证规则
+			const value = this.state[name] // 验证数据
+			let validateStatus = true
+			rules &&
+				rules.some((rule) => {
+					const descriptor = { [name]: rule }
+					const schema = new Schema(descriptor)
+					schema.validate({ [name]: value }, (error, field) => {
+						if (error) {
 							this.setState({
-								[name + 'message']: rule.message
+								[name + 'message']: error[0].message
 							})
-							return true
+							validateStatus = false
 						}
-					}
+					})
 				})
-			if (status) {
+			if (validateStatus) {
 				this.setState({
 					[name + 'message']: ''
 				})
 			}
-			return status
+			return validateStatus
 		}
 		// 筛选对象
 		filter = (obj) => {
@@ -71,18 +74,22 @@ function CreateFrom(Comp) {
 			})
 		}
 		// 创建FromItem包装器
-		getFromItem = (name,field,option) => {
+		getFromItem = (name, field, option) => {
 			this.options[field] = option
+			// 判断表单是否必填
+			const required = option.rules[0].required
 			return (FromItem) => (
-			<div>
-				<label>{name}</label>
-				{React.cloneElement(FromItem,{
-					name: name,
-					// 传递Input
-					children: this.getFieldDec(field)(FromItem.props.children)
-				})}
-				{this.state[field + 'message'] && <p className="error">{this.state[field + 'message']}</p>}
-			</div>)
+				<div>
+					{required && <span className='required'>*</span>}
+					<label>{name}</label>
+					{React.cloneElement(FromItem, {
+						name: name,
+						// 传递Input
+						children: this.getFieldDec(field)(FromItem.props.children)
+					})}
+					{this.state[field + 'message'] && <p className="error">{this.state[field + 'message']}</p>}
+				</div>
+			)
 		}
 		// 创建Input包装器
 		getFieldDec = (field) => {
@@ -92,12 +99,12 @@ function CreateFrom(Comp) {
 						name: field,
 						value: this.state[field] || '',
 						onChange: this.handleChange
-					})}				
+					})}
 				</div>
 			)
 		}
 		// 创建提交按钮包装器
-		getSubmit = (name, cb) => {			
+		getSubmit = (name, cb) => {
 			return (Submit) => (
 				<div>
 					{React.cloneElement(Submit, {
@@ -132,7 +139,7 @@ class From extends Component {
 		return (
 			<div>
 				{React.Children.map(children, (child) => {
-					if (child.props.htmlType !== 'submit') {						
+					if (child.props.htmlType !== 'submit') {
 						return getFromItem(child.props.name, child.props.prop, {
 							rules: rules[child.props.prop]
 						})(child)
@@ -145,7 +152,5 @@ class From extends Component {
 		)
 	}
 }
-
-
 
 export default From

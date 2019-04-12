@@ -45,6 +45,6 @@ ol, ul {
   margin-left: 20px;
 }
 
-.error {
+.error,.required {
   color: red
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 @connect(
-	(state) => ({ num: state.counterReducer }),
+	(state) => ({ num: state.test }),
 	{
 		add: () => ({ type: 'add' }),
 		minus: () => ({ type: 'minus' }),
