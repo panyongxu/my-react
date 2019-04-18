@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Schema from 'async-validator'
-import { spawn } from 'child_process';
+import { spawn } from 'child_process'
 
 function CreateFrom(Comp) {
 	return class extends Component {
@@ -37,11 +37,11 @@ function CreateFrom(Comp) {
 		// 筛选对象
 		filter = (obj) => {
 			let data = {}
-			Object.keys(obj).map((key) => {
+			for (let key in obj) {
 				if (key.indexOf('message') === -1) {
 					data[key] = obj[key]
 				}
-			})
+			}
 			return data
 		}
 		// 验证所有
@@ -80,7 +80,7 @@ function CreateFrom(Comp) {
 			const required = option.rules[0].required
 			return (FromItem) => (
 				<div>
-					{required && <span className='required'>*</span>}
+					{required && <span className="required">*</span>}
 					<label>{name}</label>
 					{React.cloneElement(FromItem, {
 						name: name,
